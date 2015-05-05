@@ -12,6 +12,9 @@
 #include"jetson_msg.hpp"
 #include "lpc_pwm.hpp"
 
+#define motor1_left 8.5
+#define motor1_center 6.8
+#define motor4_medium 8.2
 #define low 10.0
 #define medium 7.5
 #define high 5.0
@@ -20,45 +23,58 @@
 #define right  5.0
 
 extern uint32_t message_no;
-
-    PWM pwm1(PWM::pwm1,50 );
-    PWM pwm2(PWM::pwm2,50 );
-    PWM pwm3(PWM::pwm3,50 );
-    PWM pwm4(PWM::pwm4,50 );
-    PWM pwm5(PWM::pwm5,50 );
-    PWM pwm6(PWM::pwm6,50 );
-
+#if 0
+static    PWM pwm1(PWM::pwm1,50 );
+static    PWM pwm2(PWM::pwm2,50 );
+static    PWM pwm3(PWM::pwm3,50 );
+static    PWM pwm4(PWM::pwm4,50 );
+static    PWM pwm5(PWM::pwm5,50 );
+static    PWM pwm6(PWM::pwm6,50 );
+#endif
 motor_movement::motor_movement(uint8_t priority) : scheduler_task("motor_movement",1024,priority)
-{
+{static    PWM pwm1(PWM::pwm1,50 );
+static    PWM pwm2(PWM::pwm2,50 );
+static    PWM pwm3(PWM::pwm3,50 );
+static    PWM pwm4(PWM::pwm4,50 );
+static    PWM pwm5(PWM::pwm5,50 );
+static    PWM pwm6(PWM::pwm6,50 );
+
     // nothing to init
-    pwm1.set(center);
+    pwm1.set(motor1_center);
     pwm2.set(center);
     pwm3.set(center);
-    pwm4.set(center);
-    pwm5.set(center);
-    pwm6.set(center);
+    pwm4.set(motor4_medium);
+    pwm5.set(motor4_medium);
+    pwm6.set(motor1_center);
+    delay_ms(500);
 
 }
 
 bool motor_movement:: run(void *p)
-{
+{   static    PWM pwm1(PWM::pwm1,50 );
+    static    PWM pwm2(PWM::pwm2,50 );
+    static    PWM pwm3(PWM::pwm3,50 );
+    static    PWM pwm4(PWM::pwm4,50 );
+    static    PWM pwm5(PWM::pwm5,50 );
+    static    PWM pwm6(PWM::pwm6,50 );
+    printf("\n");
     switch(message_no)
                 {
-                    case 0:
+                    case 19:
                          // motor 1 left
-                        pwm1.set(left);
+                        pwm1.set(motor1_left);
                         printf("motor 1 left \n");
                         break;
 
                     case 1:
                         // motor 1 center
-                        pwm1.set(center);
+                        pwm1.set(motor1_center);
                         printf("motor 1 center \n");
                         break;
 
                     case 2:
                         // motor 1 right
-                        pwm1.set(right);
+                        //pwm1.set(right);
                         printf("motor 1 right \n");
                         break;
                  //------------------------------------
@@ -76,7 +92,7 @@ bool motor_movement:: run(void *p)
 
                     case 5:
                         // motor 2 high
-                        pwm2.set(high);
+                     //   pwm2.set(high);
                         printf("motor 2 high \n");
                         break;
                 //-------------------------------------
@@ -94,7 +110,7 @@ bool motor_movement:: run(void *p)
 
                     case 8:
                         // motor 3 high
-                        pwm3.set(high);
+                       // pwm3.set(high);
                         printf("motor 3 high \n");
                         break;
                //-------------------------------------
@@ -106,13 +122,13 @@ bool motor_movement:: run(void *p)
 
                     case 10:
                         // motor 4 med
-                        pwm4.set(medium);
+                        pwm4.set(motor4_medium);
                         printf("motor 4 medium \n");
                         break;
 
                     case 11:
                         // motor 4 high
-                        pwm4.set(high);
+                        //pwm4.set(high);
                         printf("motor 4 high \n");
                         break;
              //------------------------------------------
@@ -124,25 +140,25 @@ bool motor_movement:: run(void *p)
 
                     case 13:
                         // motor 5 med
-                        pwm5.set(medium);
+                        pwm5.set(motor4_medium);
                         printf("motor 5 medium \n");
                         break;
 
                     case 14:
                         // motor 5 high
-                        pwm5.set(high);
+                       // pwm5.set(high);
                         printf("motor 5 high \n");
                         break;
             //--------------------------------------------
                     case 15:
                          // motor 6 left
-                        pwm6.set(left);
+                       // pwm6.set(left);
                         printf("motor 6 left \n");
                         break;
 
                     case 16:
                         // motor 6 center
-                        pwm6.set(center);
+                        pwm6.set(motor1_center);
                         printf("motor 6 center \n");
                         break;
 
@@ -152,16 +168,33 @@ bool motor_movement:: run(void *p)
                         printf("motor 6 right \n");
                         break;
 
-                    case 26:
-                        printf("I am in switch case \n");
+                    case 18:
+                            pwm1.set(motor1_center);
+                            pwm2.set(center);
+                            pwm3.set(center);
+                            pwm4.set(motor4_medium);
+                            pwm5.set(motor4_medium);
+                            pwm6.set(motor1_center);
                         break;
 
                     default:
                         //--go to default state
+                    #if 0
+                        printf("I am in default \n");
+                        pwm1.set(high);
+                        pwm2.set(left);
+                        delay_ms(500);
+                        pwm1.set(medium);
+                        pwm2.set(center);
+                        delay_ms(500);
+                        pwm1.set(low);
+                        pwm2.set(right);
+                        delay_ms(500);
+                    #endif
                         break;
 
                 }
 
-    delay_ms(1000);
+    delay_ms(10);
     return true;
 }
